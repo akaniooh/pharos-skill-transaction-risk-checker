@@ -37,6 +37,6 @@
     "**/*.mts"
   ],
   "exclude": [
-    "node_modules", "examples", "references", "scripts"
+    "node_modules", "examples", "lib/walletExamples.ts", "lib/safeExecute.ts", "references", "scripts"
   ]
 }
