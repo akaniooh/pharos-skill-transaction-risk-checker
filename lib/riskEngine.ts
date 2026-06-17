@@ -56,6 +56,8 @@ function isKnownContract(address: string): boolean {
 }
 
 function parseAmount(raw: string): number {
+  const lower = raw.trim().toLowerCase();
+  if (lower === "unlimited" || lower === "max" || lower === "infinite") return Infinity;
   const cleaned = raw.replace(/[^0-9.]/g, "");
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
@@ -94,7 +96,10 @@ export function assessRisk(input: TransactionInput): RiskAssessment {
   let amountImpact = 0;
   let amountDetail = "";
 
-  if (amount === 0) {
+  if (!isFinite(amount) && amount > 0) {
+    amountImpact = 50;
+    amountDetail = "Unlimited amount — exposes entire token balance.";
+  } else if (amount === 0) {
     amountImpact = 5;
     amountDetail = "Zero or unparseable amount — treat as suspicious.";
   } else if (amount < AMOUNT_THRESHOLDS.LOW) {
